@@ -17,10 +17,9 @@ public class AddTask extends AppCompatActivity {
         taskSubmitted.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast toast = Toast.makeText(getApplicationContext(),
+                Toast toast = Toast.makeText(AddTask.this,
                         "The task is submitted!",
                         Toast.LENGTH_SHORT);
-
                 toast.show();
             }
         });

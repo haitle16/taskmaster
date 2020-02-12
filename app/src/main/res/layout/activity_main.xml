@@ -7,17 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="321dp"
-        android:layout_height="340dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.404"
-        app:srcCompat="@drawable/ic_launcher_foreground" />
-
     <Button
         android:id="@+id/addtaskbtn"
         android:layout_width="wrap_content"
@@ -51,7 +40,7 @@
         app:layout_constraintVertical_bias="0.966" />
 
     <TextView
-        android:id="@+id/textView2"
+        android:id="@+id/mytaskhpage"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="48dp"
@@ -63,5 +52,57 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.034" />
+
+    <ScrollView
+        android:layout_width="360dp"
+        android:layout_height="381dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.49"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.408">
+
+        <LinearLayout
+            android:id="@+id/task_container_buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <Button
+                android:id="@+id/taskbtn1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/finish_code_challenge" />
+
+            <Button
+                android:id="@+id/taskbtn2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/finish_lab" />
+
+            <Button
+                android:id="@+id/taskbtn3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/practice_whiteboarding" />
+
+        </LinearLayout>
+    </ScrollView>
+
+    <ImageButton
+        android:id="@+id/settingbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="12dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0"
+        app:srcCompat="@android:drawable/ic_menu_preferences"
+        android:contentDescription="@string/todo" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

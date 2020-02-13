@@ -51,18 +51,18 @@ public class MainActivity extends AppCompatActivity {
 //            startActivity(toviewdetail);
 //        });
 
-        ViewGroup btnLayout = (ViewGroup) findViewById(R.id.task_container_buttons);
-        for(int i = 0; i < btnLayout.getChildCount(); i++) {
-            View child = btnLayout.getChildAt(i);
-            if(child instanceof Button) {
-                Button button = (Button) child;
-                button.setOnClickListener((v) -> {
-                    Intent toviewdetail = new Intent(this, TaskDetail.class);
-                    toviewdetail.putExtra("taskName", button.getText().toString());
-                    startActivity(toviewdetail);
-                });
-            }
-        }
+//        ViewGroup btnLayout = (ViewGroup) findViewById(R.id.task_container_buttons);
+//        for(int i = 0; i < btnLayout.getChildCount(); i++) {
+//            View child = btnLayout.getChildAt(i);
+//            if(child instanceof Button) {
+//                Button button = (Button) child;
+//                button.setOnClickListener((v) -> {
+//                    Intent toviewdetail = new Intent(this, TaskDetail.class);
+//                    toviewdetail.putExtra("taskName", button.getText().toString());
+//                    startActivity(toviewdetail);
+//                });
+//            }
+//        }
 
 
 

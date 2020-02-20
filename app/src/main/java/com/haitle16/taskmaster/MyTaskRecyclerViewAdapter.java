@@ -53,7 +53,7 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
 //                    mListener.onListFragmentInteraction(holder.mItem);
 //                }
                 Intent toviewdetail = new Intent(v.getContext(), TaskDetail.class);
-                toviewdetail.putExtra("taskName", holder.mTitleView.getText().toString());
+                toviewdetail.putExtra("taskName", holder.mItem.getTitle());
                 v.getContext().startActivity(toviewdetail);
                 Log.i(TAG, "task holder was clicked");
             }

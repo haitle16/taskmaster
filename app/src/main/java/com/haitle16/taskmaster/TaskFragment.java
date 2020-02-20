@@ -8,15 +8,28 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.amazonaws.amplify.generated.graphql.GetTaskmasterQuery;
+import com.amazonaws.amplify.generated.graphql.ListTaskmastersQuery;
+import com.amazonaws.mobile.config.AWSConfiguration;
+import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
+import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
+import com.apollographql.apollo.GraphQLCall;
+import com.apollographql.apollo.api.Response;
+import com.apollographql.apollo.exception.ApolloException;
 import com.haitle16.taskmaster.dummy.DummyContent;
 import com.haitle16.taskmaster.dummy.DummyContent.DummyItem;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.Nonnull;
 
 /**
  * A fragment representing a list of Items.
@@ -31,6 +44,9 @@ public class TaskFragment extends Fragment {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private RecyclerView recyclerView;
+    private AWSAppSyncClient mAWSAppSyncClient;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -66,24 +82,48 @@ public class TaskFragment extends Fragment {
         // Set the adapter
         if (view instanceof RecyclerView) {
             Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
+            recyclerView = (RecyclerView) view;
             if (mColumnCount <= 1) {
                 recyclerView.setLayoutManager(new LinearLayoutManager(context));
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-
-            List<Task> tasklist = new ArrayList<>();
-            tasklist.add(new Task("Code Challege 1", "body", "new"));
-            tasklist.add(new Task("Lab 1", "do lab work", "assigned"));
-            tasklist.add(new Task("Code Challege 2", "body", "new"));
-            tasklist.add(new Task("Lab 2", "do lab work", "assigned"));
-
-            recyclerView.setAdapter(new MyTaskRecyclerViewAdapter(tasklist, null));
         }
+
+        // Connect to AWS
+        mAWSAppSyncClient = AWSAppSyncClient.builder()
+                .context(view.getContext().getApplicationContext())
+                .awsConfiguration(new AWSConfiguration(view.getContext().getApplicationContext()))
+                .build();
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        mAWSAppSyncClient.query(ListTaskmastersQuery.builder().build())
+                .responseFetcher(AppSyncResponseFetchers.NETWORK_FIRST)
+                .enqueue(new GraphQLCall.Callback<ListTaskmastersQuery.Data>() {
+                    @Override
+                    public void onResponse(@Nonnull Response<ListTaskmastersQuery.Data> response) {
+
+                        Handler h = new Handler(Looper.getMainLooper()) {
+                            @Override
+                            public void handleMessage(Message inputMessage) {
+                                recyclerView.setAdapter(new MyTaskRecyclerViewAdapter(response.data().listTaskmasters().items(), null));
+
+                            }
+                        };
+                        h.obtainMessage().sendToTarget();
+                    }
+
+                    @Override
+                    public void onFailure(@Nonnull ApolloException e) {
+
+                    }
+                });
+    }
 
     @Override
     public void onAttach(Context context) {

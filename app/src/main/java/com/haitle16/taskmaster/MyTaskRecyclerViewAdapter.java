@@ -23,7 +23,7 @@ import java.util.List;
 public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecyclerViewAdapter.ViewHolder> {
 
     static final String TAG = "haitle16.ViewAdapter";
-    private final List<ListTaskmastersQuery.Item> mValues;
+    private List<ListTaskmastersQuery.Item> mValues;
     private final OnListFragmentInteractionListener mListener;
 
     public MyTaskRecyclerViewAdapter(List<ListTaskmastersQuery.Item> items, OnListFragmentInteractionListener listener) {
@@ -66,6 +66,10 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
     @Override
     public int getItemCount() {
         return mValues.size();
+    }
+
+    public void setItems(List<ListTaskmastersQuery.Item> items) {
+        this.mValues = items;
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {

@@ -46,6 +46,7 @@ public class TaskFragment extends Fragment {
     private OnListFragmentInteractionListener mListener;
     private RecyclerView recyclerView;
     private AWSAppSyncClient mAWSAppSyncClient;
+    private MyTaskRecyclerViewAdapter adapter;
 
 
     /**
@@ -108,13 +109,21 @@ public class TaskFragment extends Fragment {
                     @Override
                     public void onResponse(@Nonnull Response<ListTaskmastersQuery.Data> response) {
 
+                        //Create a new handle to run this background thread.
                         Handler h = new Handler(Looper.getMainLooper()) {
                             @Override
                             public void handleMessage(Message inputMessage) {
-                                recyclerView.setAdapter(new MyTaskRecyclerViewAdapter(response.data().listTaskmasters().items(), null));
+                                if(adapter == null) {
+                                    adapter = new MyTaskRecyclerViewAdapter(null, mListener);
+                                    recyclerView.setAdapter(adapter);
+                                }
+                                adapter.setItems(response.data().listTaskmasters().items());
+                                adapter.notifyDataSetChanged();
+//                                recyclerView.setAdapter(new MyTaskRecyclerViewAdapter(response.data().listTaskmasters().items(), mListener));
 
                             }
                         };
+                        // package up the handler and send it to the UI thread.
                         h.obtainMessage().sendToTarget();
                     }
 

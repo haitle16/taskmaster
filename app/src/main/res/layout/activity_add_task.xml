@@ -47,6 +47,7 @@
         app:layout_constraintVertical_bias="0.272">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/addATaskTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/my_task" />
@@ -64,6 +65,7 @@
         app:layout_constraintVertical_bias="0.153">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/addATaskDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/task_description" />

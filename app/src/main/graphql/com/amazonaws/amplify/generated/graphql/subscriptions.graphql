@@ -1,0 +1,25 @@
+# this is an auto generated file. This will be overwritten
+subscription OnCreateTaskmaster {
+  onCreateTaskmaster {
+    id
+    title
+    body
+    state
+  }
+}
+subscription OnUpdateTaskmaster {
+  onUpdateTaskmaster {
+    id
+    title
+    body
+    state
+  }
+}
+subscription OnDeleteTaskmaster {
+  onDeleteTaskmaster {
+    id
+    title
+    body
+    state
+  }
+}

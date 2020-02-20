@@ -1,0 +1,24 @@
+# this is an auto generated file. This will be overwritten
+query GetTaskmaster($id: ID!) {
+  getTaskmaster(id: $id) {
+    id
+    title
+    body
+    state
+  }
+}
+query ListTaskmasters(
+  $filter: ModelTaskmasterFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listTaskmasters(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      title
+      body
+      state
+    }
+    nextToken
+  }
+}

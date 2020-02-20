@@ -1,0 +1,6 @@
+type Taskmaster @model {
+  id: ID!
+  title: String
+  body: String
+  state: String
+}

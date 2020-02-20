@@ -1,0 +1,34 @@
+# this is an auto generated file. This will be overwritten
+mutation CreateTaskmaster(
+  $input: CreateTaskmasterInput!
+  $condition: ModelTaskmasterConditionInput
+) {
+  createTaskmaster(input: $input, condition: $condition) {
+    id
+    title
+    body
+    state
+  }
+}
+mutation UpdateTaskmaster(
+  $input: UpdateTaskmasterInput!
+  $condition: ModelTaskmasterConditionInput
+) {
+  updateTaskmaster(input: $input, condition: $condition) {
+    id
+    title
+    body
+    state
+  }
+}
+mutation DeleteTaskmaster(
+  $input: DeleteTaskmasterInput!
+  $condition: ModelTaskmasterConditionInput
+) {
+  deleteTaskmaster(input: $input, condition: $condition) {
+    id
+    title
+    body
+    state
+  }
+}

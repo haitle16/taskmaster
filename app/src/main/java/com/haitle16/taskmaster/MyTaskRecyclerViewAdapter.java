@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.amazonaws.amplify.generated.graphql.ListTaskmastersQuery;
 import com.haitle16.taskmaster.TaskFragment.OnListFragmentInteractionListener;
 import com.haitle16.taskmaster.dummy.DummyContent.DummyItem;
 
@@ -22,10 +23,10 @@ import java.util.List;
 public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecyclerViewAdapter.ViewHolder> {
 
     static final String TAG = "haitle16.ViewAdapter";
-    private final List<Task> mValues;
+    private final List<ListTaskmastersQuery.Item> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyTaskRecyclerViewAdapter(List<Task> items, OnListFragmentInteractionListener listener) {
+    public MyTaskRecyclerViewAdapter(List<ListTaskmastersQuery.Item> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -40,9 +41,9 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mTitleView.setText(mValues.get(position).getTitle());
-        holder.mBodyView.setText(mValues.get(position).getBody());
-        holder.mStateView.setText(mValues.get(position).getState());
+        holder.mTitleView.setText(mValues.get(position).title());
+        holder.mBodyView.setText(mValues.get(position).body());
+        holder.mStateView.setText(mValues.get(position).state());
 
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -52,8 +53,10 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
 //                    // fragment is attached to one) that an item has been selected.
 //                    mListener.onListFragmentInteraction(holder.mItem);
 //                }
+
+                // consider passing body and state into the task details page
                 Intent toviewdetail = new Intent(v.getContext(), TaskDetail.class);
-                toviewdetail.putExtra("taskName", holder.mTitleView.getText().toString());
+                toviewdetail.putExtra("taskName", holder.mItem.title());
                 v.getContext().startActivity(toviewdetail);
                 Log.i(TAG, "task holder was clicked");
             }
@@ -71,7 +74,7 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
         public final TextView mBodyView;
         public final TextView mStateView;
 
-        public Task mItem;
+        public ListTaskmastersQuery.Item mItem;
 
         public ViewHolder(View view) {
             super(view);

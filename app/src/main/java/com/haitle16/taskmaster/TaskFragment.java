@@ -17,6 +17,7 @@ import android.view.ViewGroup;
 
 import com.amazonaws.amplify.generated.graphql.GetTaskmasterQuery;
 import com.amazonaws.amplify.generated.graphql.ListTaskmastersQuery;
+import com.amazonaws.amplify.generated.graphql.ListTasksQuery;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
 import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
@@ -102,12 +103,11 @@ public class TaskFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
-
-        mAWSAppSyncClient.query(ListTaskmastersQuery.builder().build())
+        mAWSAppSyncClient.query(ListTasksQuery.builder().build())
                 .responseFetcher(AppSyncResponseFetchers.NETWORK_FIRST)
-                .enqueue(new GraphQLCall.Callback<ListTaskmastersQuery.Data>() {
+                .enqueue(new GraphQLCall.Callback<ListTasksQuery.Data>() {
                     @Override
-                    public void onResponse(@Nonnull Response<ListTaskmastersQuery.Data> response) {
+                    public void onResponse(@Nonnull Response<ListTasksQuery.Data> response) {
 
                         //Create a new handle to run this background thread.
                         Handler h = new Handler(Looper.getMainLooper()) {
@@ -117,7 +117,7 @@ public class TaskFragment extends Fragment {
                                     adapter = new MyTaskRecyclerViewAdapter(null, mListener);
                                     recyclerView.setAdapter(adapter);
                                 }
-                                adapter.setItems(response.data().listTaskmasters().items());
+                                adapter.setItems(response.data().listTasks().items());
                                 adapter.notifyDataSetChanged();
 //                                recyclerView.setAdapter(new MyTaskRecyclerViewAdapter(response.data().listTaskmasters().items(), mListener));
 

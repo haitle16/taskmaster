@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.amazonaws.amplify.generated.graphql.ListTaskmastersQuery;
+import com.amazonaws.amplify.generated.graphql.ListTasksQuery;
 import com.haitle16.taskmaster.TaskFragment.OnListFragmentInteractionListener;
 import com.haitle16.taskmaster.dummy.DummyContent.DummyItem;
 
@@ -23,10 +24,10 @@ import java.util.List;
 public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecyclerViewAdapter.ViewHolder> {
 
     static final String TAG = "haitle16.ViewAdapter";
-    private List<ListTaskmastersQuery.Item> mValues;
+    private List<ListTasksQuery.Item> mValues;
     private final OnListFragmentInteractionListener mListener;
 
-    public MyTaskRecyclerViewAdapter(List<ListTaskmastersQuery.Item> items, OnListFragmentInteractionListener listener) {
+    public MyTaskRecyclerViewAdapter(List<ListTasksQuery.Item> items, OnListFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
@@ -68,7 +69,7 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
         return mValues.size();
     }
 
-    public void setItems(List<ListTaskmastersQuery.Item> items) {
+    public void setItems(List<ListTasksQuery.Item> items) {
         this.mValues = items;
     }
 
@@ -78,7 +79,7 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
         public final TextView mBodyView;
         public final TextView mStateView;
 
-        public ListTaskmastersQuery.Item mItem;
+        public ListTasksQuery.Item mItem;
 
         public ViewHolder(View view) {
             super(view);

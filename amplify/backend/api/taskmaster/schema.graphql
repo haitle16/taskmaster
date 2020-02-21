@@ -9,5 +9,5 @@ type Task @model
 type Team @model {
   id: ID!
   name: String!
-  tasks: [Tasks] @connection(keyName: "byTask", fields: ["id"])
+  tasks: [Task] @connection(keyName: "byTask", fields: ["id"])
 }

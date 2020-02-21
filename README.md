@@ -8,10 +8,11 @@
 * Added setting page where user can save their setting preference.
 * * Able to save their input and display it on the home page.
 * Implemented a RecyclerView where user can view their tasks and click on it for further details.
+* Implemented DynamoDB and able to get and write to database. Database is being displayed on the main screen.
 
 
 
 ### Screenshots
 #### Home page
-![](/assets/homeSS003.png)
+![](/assets/homeSS004.png)
 

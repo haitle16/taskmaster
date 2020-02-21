@@ -1,23 +1,57 @@
 # this is an auto generated file. This will be overwritten
-query GetTaskmaster($id: ID!) {
-  getTaskmaster(id: $id) {
+query GetTask($id: ID!) {
+  getTask(id: $id) {
     id
+    teamID
     title
     body
     state
   }
 }
-query ListTaskmasters(
-  $filter: ModelTaskmasterFilterInput
+query ListTasks(
+  $filter: ModelTaskFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listTaskmasters(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  listTasks(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      teamID
       title
       body
       state
+    }
+    nextToken
+  }
+}
+query GetTeam($id: ID!) {
+  getTeam(id: $id) {
+    id
+    name
+    tasks {
+      items {
+        id
+        teamID
+        title
+        body
+        state
+      }
+      nextToken
+    }
+  }
+}
+query ListTeams(
+  $filter: ModelTeamFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listTeams(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      name
+      tasks {
+        nextToken
+      }
     }
     nextToken
   }

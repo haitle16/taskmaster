@@ -1,34 +1,94 @@
 # this is an auto generated file. This will be overwritten
-mutation CreateTaskmaster(
-  $input: CreateTaskmasterInput!
-  $condition: ModelTaskmasterConditionInput
+mutation CreateTask(
+  $input: CreateTaskInput!
+  $condition: ModelTaskConditionInput
 ) {
-  createTaskmaster(input: $input, condition: $condition) {
+  createTask(input: $input, condition: $condition) {
     id
+    teamID
     title
     body
     state
   }
 }
-mutation UpdateTaskmaster(
-  $input: UpdateTaskmasterInput!
-  $condition: ModelTaskmasterConditionInput
+mutation UpdateTask(
+  $input: UpdateTaskInput!
+  $condition: ModelTaskConditionInput
 ) {
-  updateTaskmaster(input: $input, condition: $condition) {
+  updateTask(input: $input, condition: $condition) {
     id
+    teamID
     title
     body
     state
   }
 }
-mutation DeleteTaskmaster(
-  $input: DeleteTaskmasterInput!
-  $condition: ModelTaskmasterConditionInput
+mutation DeleteTask(
+  $input: DeleteTaskInput!
+  $condition: ModelTaskConditionInput
 ) {
-  deleteTaskmaster(input: $input, condition: $condition) {
+  deleteTask(input: $input, condition: $condition) {
     id
+    teamID
     title
     body
     state
+  }
+}
+mutation CreateTeam(
+  $input: CreateTeamInput!
+  $condition: ModelTeamConditionInput
+) {
+  createTeam(input: $input, condition: $condition) {
+    id
+    name
+    tasks {
+      items {
+        id
+        teamID
+        title
+        body
+        state
+      }
+      nextToken
+    }
+  }
+}
+mutation UpdateTeam(
+  $input: UpdateTeamInput!
+  $condition: ModelTeamConditionInput
+) {
+  updateTeam(input: $input, condition: $condition) {
+    id
+    name
+    tasks {
+      items {
+        id
+        teamID
+        title
+        body
+        state
+      }
+      nextToken
+    }
+  }
+}
+mutation DeleteTeam(
+  $input: DeleteTeamInput!
+  $condition: ModelTeamConditionInput
+) {
+  deleteTeam(input: $input, condition: $condition) {
+    id
+    name
+    tasks {
+      items {
+        id
+        teamID
+        title
+        body
+        state
+      }
+      nextToken
+    }
   }
 }

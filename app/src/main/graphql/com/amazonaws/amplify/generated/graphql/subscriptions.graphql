@@ -1,25 +1,76 @@
 # this is an auto generated file. This will be overwritten
-subscription OnCreateTaskmaster {
-  onCreateTaskmaster {
+subscription OnCreateTask {
+  onCreateTask {
     id
+    teamID
     title
     body
     state
   }
 }
-subscription OnUpdateTaskmaster {
-  onUpdateTaskmaster {
+subscription OnUpdateTask {
+  onUpdateTask {
     id
+    teamID
     title
     body
     state
   }
 }
-subscription OnDeleteTaskmaster {
-  onDeleteTaskmaster {
+subscription OnDeleteTask {
+  onDeleteTask {
     id
+    teamID
     title
     body
     state
+  }
+}
+subscription OnCreateTeam {
+  onCreateTeam {
+    id
+    name
+    tasks {
+      items {
+        id
+        teamID
+        title
+        body
+        state
+      }
+      nextToken
+    }
+  }
+}
+subscription OnUpdateTeam {
+  onUpdateTeam {
+    id
+    name
+    tasks {
+      items {
+        id
+        teamID
+        title
+        body
+        state
+      }
+      nextToken
+    }
+  }
+}
+subscription OnDeleteTeam {
+  onDeleteTeam {
+    id
+    name
+    tasks {
+      items {
+        id
+        teamID
+        title
+        body
+        state
+      }
+      nextToken
+    }
   }
 }

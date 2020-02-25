@@ -45,45 +45,9 @@ public class MainActivity extends AppCompatActivity {
                 .awsConfiguration(new AWSConfiguration(getApplicationContext()))
                 .build();
 
-        // Team Spinner
-//        String[] testArray = new String[]{};
-//        Spinner teamspinner = (Spinner) findViewById(R.id.team_spinner);
-//        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, testArray );
-//        Log.i("haitle16.AddTask", spinnerArrayAdapter.toString());
-//        spinnerArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//        if(spinnerArrayAdapter == null) {
-//            spinnerArrayAdapter.add("Red");
-//            spinnerArrayAdapter.add("Amber");
-//            spinnerArrayAdapter.add("Silver");
-//            teamspinner.setAdapter(spinnerArrayAdapter);
-//        }
 
 
-
-
-
-
-//        mAWSAppSyncClient.query(ListTeamsQuery.builder().build())
-//                .responseFetcher(AppSyncResponseFetchers.NETWORK_FIRST)
-//                .enqueue(new GraphQLCall.Callback<ListTeamsQuery.Data>() {
-//                    @Override
-//                    public void onResponse(@Nonnull Response<ListTeamsQuery.Data> response) {
-//
-//
-//                    }
-//
-//                    @Override
-//                    public void onFailure(@Nonnull ApolloException e) {
-//
-//                    }
-//                });
-
-
-//        Log.i("haitle16.AddTask", adapter.toString());
-
-
-
-
+        // Hard coding 3 teams.
 //        CreateTeamInput teamRedinput = CreateTeamInput.builder()
 //                .name("Red")
 //                .build();

@@ -9,6 +9,7 @@
 * * Able to save their input and display it on the home page.
 * Implemented a RecyclerView where user can view their tasks and click on it for further details.
 * Implemented DynamoDB and able to get and write to database. Database is being displayed on the main screen.
+* User will able to view their specific team's task on the home page and view all the team's task on all task page
 
 
 

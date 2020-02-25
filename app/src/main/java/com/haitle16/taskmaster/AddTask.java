@@ -4,7 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 import type.CreateTaskInput;
 
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -17,11 +22,16 @@ import com.amazonaws.amplify.generated.graphql.CreateTaskmasterMutation;
 import com.amazonaws.amplify.generated.graphql.ListTeamsQuery;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
+import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.Hashtable;
+import java.util.LinkedList;
+import java.util.List;
 
 import javax.annotation.Nonnull;
 
@@ -29,7 +39,9 @@ public class AddTask extends AppCompatActivity {
 
     private AWSAppSyncClient mAWSAppSyncClient;
     private RecyclerView recyclerView;
-    private MyTaskRecyclerViewAdapter adapter;
+//    private SpinAdapter adapter;
+    private Hashtable<String, String> teamNameID = new Hashtable<>();
+
 
 
     @Override
@@ -44,12 +56,44 @@ public class AddTask extends AppCompatActivity {
                 .build();
 
 
+        // Team selection spinner on AddTask Page
+        mAWSAppSyncClient.query(ListTeamsQuery.builder().build())
+        .responseFetcher(AppSyncResponseFetchers.NETWORK_FIRST)
+        .enqueue(new GraphQLCall.Callback<ListTeamsQuery.Data>() {
+            @Override
+            public void onResponse(@Nonnull Response<ListTeamsQuery.Data> response) {
+                List<ListTeamsQuery.Item> allTeams = new LinkedList<>();
+                allTeams.addAll(response.data().listTeams().items());
 
-        // Team Spinner
-//        String[] testArray = new String[]{"Red", "Amber", "Silver"};
-//        Spinner teamspinner = (Spinner) findViewById(R.id.team_spinner);
-//        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_item, testArray );
-//        Log.i("haitle16.AddTask", spinnerArrayAdapter.toString());
+                LinkedList<String> teamList = new LinkedList<>();
+                for(ListTeamsQuery.Item team : allTeams) {
+                    teamList.add(team.name());
+                    teamNameID.put(team.name(), team.id());
+
+                }
+                Log.i("haitle16.AddTask", teamList.toString());
+
+                Spinner teamspinner = findViewById(R.id.team_spinner);
+                ArrayAdapter<String> adapter = new ArrayAdapter<>(AddTask.this, android.R.layout.simple_spinner_item, teamList);
+
+                // Running on another thread instead of UI.
+                Handler h = new Handler(Looper.getMainLooper()) {
+                    @Override
+                    public void handleMessage(Message input) {
+                        teamspinner.setAdapter(adapter);
+                    }
+                };
+                h.obtainMessage().sendToTarget();
+
+
+            }
+
+            @Override
+            public void onFailure(@Nonnull ApolloException e) {
+                Log.i("haitle16", "failed setting team spinner");
+
+            }
+        });
 
 
         // Triggering the toast after a task is submitted
@@ -71,6 +115,18 @@ public class AddTask extends AppCompatActivity {
         EditText taskBodyText = findViewById(R.id.addATaskDescription);
         String taskTitle = taskTitleText.getText().toString();
         String taskBody = taskBodyText.getText().toString();
+        Spinner teamspinner = findViewById(R.id.team_spinner);
+        String teamName = teamspinner.getSelectedItem().toString();
+        String teamID = teamNameID.get(teamName);
+
+        //Saving teamID to shared prefference
+        SharedPreferences storage = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = storage.edit();
+        editor.putString("teamID", teamID);
+        editor.apply();
+
+
+
         // need to create a state
         String state = "new";
         Log.i("haitle16.addTask", "It gets in addatask");
@@ -78,6 +134,7 @@ public class AddTask extends AppCompatActivity {
         CreateTaskInput input = CreateTaskInput.builder()
                 .title(taskTitle)
                 .body(taskBody)
+                .teamID(teamID)
                 .state(state)
                 .build();
         mAWSAppSyncClient.mutate(CreateTaskMutation.builder().input(input).build())

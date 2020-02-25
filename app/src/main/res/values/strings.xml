@@ -11,4 +11,9 @@
     <string name="finish_lab">Finish Lab</string>
     <string name="todo">TODO</string>
     <string name="practice_whiteboarding">Practice whiteboarding</string>
+    <string name="settings">Settings</string>
+    <string name="team_selection">Please select your team below</string>
+    <string name="save">save</string>
+    <string name="username_input">username</string>
+    <string name="username">username</string>
 </resources>

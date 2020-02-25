@@ -3,6 +3,7 @@ package com.haitle16.taskmaster;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -46,6 +47,12 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
         holder.mBodyView.setText(mValues.get(position).body());
         holder.mStateView.setText(mValues.get(position).state());
 
+        // trying to change the background color of the whole mView to the team's color.
+//        holder.mTeamView.setText(mValues.get(position).);
+//        holder.mStateView.setBackgroundColor(Color.rgb(220,20,60)); // sett'ed state to be red color.
+//        holder.mView.setBackgroundColor(Color.rgb(240,128,128));
+
+
         holder.mView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -78,6 +85,7 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
         public final TextView mTitleView;
         public final TextView mBodyView;
         public final TextView mStateView;
+        public final TextView mTeamView;
 
         public ListTasksQuery.Item mItem;
 
@@ -87,6 +95,7 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
             mTitleView = (TextView) view.findViewById(R.id.title);
             mBodyView = (TextView) view.findViewById(R.id.body);
             mStateView = (TextView) view.findViewById(R.id.state);
+            mTeamView = (TextView) view.findViewById(R.id.teamName);
 
         }
 

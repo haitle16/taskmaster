@@ -5,7 +5,6 @@ import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -18,11 +17,8 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Spinner;
 
-import com.amazonaws.amplify.generated.graphql.GetTaskmasterQuery;
 import com.amazonaws.amplify.generated.graphql.GetTeamQuery;
-import com.amazonaws.amplify.generated.graphql.ListTaskmastersQuery;
 import com.amazonaws.amplify.generated.graphql.ListTasksQuery;
 import com.amazonaws.amplify.generated.graphql.ListTeamsQuery;
 import com.amazonaws.mobile.config.AWSConfiguration;
@@ -31,11 +27,8 @@ import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
-import com.haitle16.taskmaster.dummy.DummyContent;
 import com.haitle16.taskmaster.dummy.DummyContent.DummyItem;
 
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -57,7 +50,9 @@ public class TaskFragment extends Fragment {
     private RecyclerView recyclerView;
     private AWSAppSyncClient mAWSAppSyncClient;
     private MyTaskRecyclerViewAdapter adapter;
+    List<ListTasksQuery.Item> teamTaskList = new LinkedList<>();
 //    private Hashtable<String, String> teamNameID = new Hashtable<>();
+
 
 
 
@@ -98,7 +93,6 @@ public class TaskFragment extends Fragment {
 //                .enqueue(new GraphQLCall.Callback<ListTeamsQuery.Data>() {
 //                    @Override
 //                    public void onResponse(@Nonnull Response<ListTeamsQuery.Data> response) {
-//                        List<ListTeamsQuery.Item> allTeams = new LinkedList<>();
 //                        allTeams.addAll(response.data().listTeams().items());
 //                        for(ListTeamsQuery.Item team : allTeams) {
 //                            teamNameID.put(team.name(), team.id());
@@ -131,11 +125,6 @@ public class TaskFragment extends Fragment {
             }
         }
 
-//        // Connect to AWS
-//        mAWSAppSyncClient = AWSAppSyncClient.builder()
-//                .context(view.getContext().getApplicationContext())
-//                .awsConfiguration(new AWSConfiguration(view.getContext().getApplicationContext()))
-//                .build();
         return view;
     }
 
@@ -145,9 +134,25 @@ public class TaskFragment extends Fragment {
 
 //        String teamID = teamNameID.get(teamName);
         SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
-        String teamID = sharedPreferences.getString("teamID", "d89aa2df-f3f3-4aff-9ed6-8edae9f5dbb2"); // default team silver
 
-//        GetTeamQuery.builder().
+        mAWSAppSyncClient.query(ListTeamsQuery.builder().build())
+                .responseFetcher(AppSyncResponseFetchers.NETWORK_FIRST)
+                .enqueue(new GraphQLCall.Callback<ListTeamsQuery.Data>() {
+                    @Override
+                    public void onResponse(@Nonnull Response<ListTeamsQuery.Data> response) {
+                        Log.i("haitle16.TaskFragment", "we got team Data name id"+ response.data().listTeams().items());
+
+                    }
+
+                    @Override
+                    public void onFailure(@Nonnull ApolloException e) {
+
+                    }
+                });
+
+
+        String teamID = sharedPreferences.getString("teamSelectedID", "bf5c6069-babd-4ae8-9ba0-444689581d4d"); // default team silver
+
         mAWSAppSyncClient.query(GetTeamQuery.builder()
         .id(teamID)
         .build())
@@ -155,10 +160,13 @@ public class TaskFragment extends Fragment {
                 .enqueue(new GraphQLCall.Callback<GetTeamQuery.Data>() {
                     @Override
                     public void onResponse(@Nonnull Response<GetTeamQuery.Data> response) {
-                        Log.i("haitle16.TaskFragment", "we got data!"+ response.data());
-                        for(GetTeamQuery.Item i : response.data().getTeam().tasks().items()) {
+                        List<GetTeamQuery.Item> specificTeamTask = response.data().getTeam().tasks().items();
+//                        LinkedList<Task> appTasks = new LinkedList<>();
+                        //  TODO: if the task gotten from DB is not null DO
+                        for(GetTeamQuery.Item i : specificTeamTask) {
                             Log.i("haitle16.TaskFragment", "Task Title: " + i.title() + " | Task Body: " + i.body() + " | Task State: " + i.state() + " | Task's TeamID: " +i.teamID());
                         }
+
                     }
 
                     @Override
@@ -183,10 +191,26 @@ public class TaskFragment extends Fragment {
                                     adapter = new MyTaskRecyclerViewAdapter(null, mListener);
                                     recyclerView.setAdapter(adapter);
                                 }
+
                                 // Create a list for the team's task based on user's team preference and iterate to populate the list with its tasks and then set items to that list.
                                 // Maybe find a way to see if its home page list only user team's task and on the all task page list all the tasks by setItems
 
-                                adapter.setItems(response.data().listTasks().items());
+                                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+                                String userPreferredTeamName = sharedPreferences.getString("teamSelected", "Silver");
+
+                                String teamID = sharedPreferences.getString("teamSelectedID", ""); // default team silver
+                                Log.i("haitle16.TaskFragment", "what kind of response: "+response.data().listTasks().items());
+
+                                for(ListTasksQuery.Item task : response.data().listTasks().items()) {
+                                    if(task.teamID().equals(teamID) && !teamTaskList.contains(task)) {
+                                        teamTaskList.add(task);
+                                    }
+                                }
+                                Log.i("haitle16.TaskFragment", "teamTaskList data:  "+teamTaskList);
+
+                                // Setting the adapter with the team's task list. ( Maybe find a way to check if its home page then set team's task, and set all tasks on all task page.
+//                                adapter.setItems(response.data().listTasks().items());
+                                adapter.setItems(teamTaskList);
                                 adapter.notifyDataSetChanged();
 //                                recyclerView.setAdapter(new MyTaskRecyclerViewAdapter(response.data().listTaskmasters().items(), mListener));
 

@@ -119,11 +119,16 @@ public class AddTask extends AppCompatActivity {
         String teamName = teamspinner.getSelectedItem().toString();
         String teamID = teamNameID.get(teamName);
 
-        //Saving teamID to shared prefference
-        SharedPreferences storage = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        SharedPreferences.Editor editor = storage.edit();
-        editor.putString("teamID", teamID);
-        editor.apply();
+//        //Getting user preferred team in setting and saving it to teamID
+//        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this.getApplicationContext());
+//
+//        String userPreferredTeamName = sharedPreferences.getString("teamSelected", "Red");
+//        String userTeamID = teamNameID.get(userPreferredTeamName);
+//
+//        SharedPreferences storage = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+//        SharedPreferences.Editor editor = storage.edit();
+//        editor.putString("userteamID", userTeamID);
+//        editor.apply();
 
 
 

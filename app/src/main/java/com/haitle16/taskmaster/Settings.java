@@ -10,6 +10,7 @@ import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -23,14 +24,18 @@ import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 
 import javax.annotation.Nonnull;
 
-public class Settings extends AppCompatActivity {
+public class Settings extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private AWSAppSyncClient mAWSAppSyncClient;
+    List<ListTeamsQuery.Item> allTeams = new LinkedList<>();
+    private Hashtable<String, String> teamNameID = new Hashtable<>();
+
 
 
     @Override
@@ -50,12 +55,12 @@ public class Settings extends AppCompatActivity {
                 .enqueue(new GraphQLCall.Callback<ListTeamsQuery.Data>() {
                     @Override
                     public void onResponse(@Nonnull Response<ListTeamsQuery.Data> response) {
-                        List<ListTeamsQuery.Item> allTeams = new LinkedList<>();
                         allTeams.addAll(response.data().listTeams().items());
 
                         LinkedList<String> teamList = new LinkedList<>();
                         for(ListTeamsQuery.Item team : allTeams) {
                             teamList.add(team.name());
+                            teamNameID.put(team.name(), team.id());
                         }
                         Spinner teamspinner = findViewById(R.id.setting_team_spinner);
                         ArrayAdapter<String> adapter = new ArrayAdapter<>(Settings.this, android.R.layout.simple_spinner_item, teamList);
@@ -65,6 +70,7 @@ public class Settings extends AppCompatActivity {
                             @Override
                             public void handleMessage(Message input) {
                                 teamspinner.setAdapter(adapter);
+
                             }
                         };
                         h.obtainMessage().sendToTarget();
@@ -80,7 +86,6 @@ public class Settings extends AppCompatActivity {
 
 
 
-        TextView usernameinput = findViewById(R.id.usernameinput);
 
 
 
@@ -88,15 +93,36 @@ public class Settings extends AppCompatActivity {
         savebtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // Getting the spinner inputs.
+                Spinner teamspinner = findViewById(R.id.setting_team_spinner);
+                TextView usernameinput = findViewById(R.id.usernameinput);
+
                 SharedPreferences storage = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
                 SharedPreferences.Editor editor = storage.edit();
                 editor.putString("username",usernameinput.getText().toString());
+                editor.putString("teamSelected", teamspinner.getSelectedItem().toString());
+                editor.putString("teamSelectedID", teamNameID.get(teamspinner.getSelectedItem()));
                 editor.apply();
+                Log.i("haitle16.Settings", "This is the team selected "+teamspinner.getSelectedItem().toString());
+
+
                 Toast toast = Toast.makeText(Settings.this,
                         "User information saved!",
                         Toast.LENGTH_SHORT);
                 toast.show();
             }
         });
+    }
+
+    @Override
+    public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        String teamName = allTeams.get(position).id();
+        Log.i("haitle16.SelectedItem", teamName);
+
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> parent) {
+
     }
 }

@@ -17,6 +17,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amazonaws.amplify.generated.graphql.ListTeamsQuery;
+import com.amazonaws.mobile.client.AWSMobileClient;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
 import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
@@ -110,6 +111,15 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
                         "User information saved!",
                         Toast.LENGTH_SHORT);
                 toast.show();
+            }
+        });
+
+        View signoutbtn = findViewById(R.id.signoutbtn);
+        signoutbtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                AWSMobileClient.getInstance().signOut();
+
             }
         });
     }

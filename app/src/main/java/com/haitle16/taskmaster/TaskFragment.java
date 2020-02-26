@@ -50,7 +50,7 @@ public class TaskFragment extends Fragment {
     private RecyclerView recyclerView;
     private AWSAppSyncClient mAWSAppSyncClient;
     private MyTaskRecyclerViewAdapter adapter;
-    List<ListTasksQuery.Item> teamTaskList = new LinkedList<>();
+//    List<ListTasksQuery.Item> teamTaskList = new LinkedList<>();
 //    private Hashtable<String, String> teamNameID = new Hashtable<>();
 
 
@@ -201,6 +201,7 @@ public class TaskFragment extends Fragment {
                                 String teamID = sharedPreferences.getString("teamSelectedID", ""); // default team silver
                                 Log.i("haitle16.TaskFragment", "what kind of response: "+response.data().listTasks().items());
 
+                                List<ListTasksQuery.Item> teamTaskList = new LinkedList<>();
                                 for(ListTasksQuery.Item task : response.data().listTasks().items()) {
                                     if(task.teamID().equals(teamID) && !teamTaskList.contains(task)) {
                                         teamTaskList.add(task);

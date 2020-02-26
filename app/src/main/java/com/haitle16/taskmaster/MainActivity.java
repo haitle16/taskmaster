@@ -18,6 +18,10 @@ import android.widget.TextView;
 
 import com.amazonaws.amplify.generated.graphql.CreateTeamMutation;
 import com.amazonaws.amplify.generated.graphql.ListTeamsQuery;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.Callback;
+import com.amazonaws.mobile.client.UserState;
+import com.amazonaws.mobile.client.UserStateDetails;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
 import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
@@ -125,31 +129,34 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+        AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
 
+                    @Override
+                    public void onResult(UserStateDetails userStateDetails) {
+                        Log.i("INIT", "onResult: " + userStateDetails.getUserState());
+                        if(userStateDetails.getUserState().equals(UserState.SIGNED_OUT)) {
+                            AWSMobileClient.getInstance().showSignIn(MainActivity.this, new Callback<UserStateDetails>() {
+                                @Override
+                                public void onResult(UserStateDetails result) {
+                                    Log.d(TAG, "onResult: " + result.getUserState());
 
+                                }
 
+                                @Override
+                                public void onError(Exception e) {
+                                    Log.e(TAG, "onError: ", e);
+                                }
+                            });
+                        }
 
+                    }
 
-//        View taskbtn1 = findViewById(R.id.taskbtn1);
-//        taskbtn1.setOnClickListener((v) -> {
-//            Intent toviewdetail = new Intent(this, TaskDetail.class);
-//            Button btn1 = (Button)findViewById(R.id.taskbtn1);
-//            toviewdetail.putExtra("taskName", btn1.getText().toString());
-//            startActivity(toviewdetail);
-//        });
-
-//        ViewGroup btnLayout = (ViewGroup) findViewById(R.id.task_container_buttons);
-//        for(int i = 0; i < btnLayout.getChildCount(); i++) {
-//            View child = btnLayout.getChildAt(i);
-//            if(child instanceof Button) {
-//                Button button = (Button) child;
-//                button.setOnClickListener((v) -> {
-//                    Intent toviewdetail = new Intent(this, TaskDetail.class);
-//                    toviewdetail.putExtra("taskName", button.getText().toString());
-//                    startActivity(toviewdetail);
-//                });
-//            }
-//        }
+                    @Override
+                    public void onError(Exception e) {
+                        Log.e("INIT", "Initialization error.", e);
+                    }
+                }
+        );
 
 
 

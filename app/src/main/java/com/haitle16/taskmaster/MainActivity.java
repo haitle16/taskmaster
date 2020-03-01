@@ -34,8 +34,8 @@ import javax.annotation.Nonnull;
 public class MainActivity extends AppCompatActivity {
 
 
-    private static final String TAG = "haitle16.main";
     private AWSAppSyncClient mAWSAppSyncClient;
+    private static final String TAG = "haitle16.main";
 //    private MyTaskRecyclerViewAdapter adapter;
 
     @Override
@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Connect to AWS
         mAWSAppSyncClient = AWSAppSyncClient.builder()
-                .context(getApplicationContext())
-                .awsConfiguration(new AWSConfiguration(getApplicationContext()))
-                .build();
+            .context(getApplicationContext())
+            .awsConfiguration(new AWSConfiguration(getApplicationContext()))
+            .build();
 
 
 
@@ -129,6 +129,30 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
+
+
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Log.i(TAG, "started");
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        Log.i(TAG, "resumed");
+
+        TextView usertasks = findViewById(R.id.mytaskhpage);
+
+        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        String nameinput = sharedPreferences.getString("username", "My Tasks");
+        if(nameinput != "My tasks") {
+            usertasks.setText(nameinput+"'s Tasks");
+        }
+
         AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
 
                     @Override
@@ -157,29 +181,6 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
         );
-
-
-
-    }
-
-    @Override
-    protected void onStart() {
-        super.onStart();
-        Log.i(TAG, "started");
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        Log.i(TAG, "resumed");
-
-        TextView usertasks = findViewById(R.id.mytaskhpage);
-
-        SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
-        String nameinput = sharedPreferences.getString("username", "My Tasks");
-        if(nameinput != "My tasks") {
-            usertasks.setText(nameinput+"'s Tasks");
-        }
 
 
         // make api call to get fresh data

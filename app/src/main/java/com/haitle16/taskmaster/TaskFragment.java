@@ -146,6 +146,7 @@ public class TaskFragment extends Fragment {
 
                     @Override
                     public void onFailure(@Nonnull ApolloException e) {
+                        Log.e("haitle16.TaskFragment0",e.toString());
 
                     }
                 });
@@ -171,6 +172,8 @@ public class TaskFragment extends Fragment {
 
                     @Override
                     public void onFailure(@Nonnull ApolloException e) {
+                        Log.e("haitle16.TaskFragment1",e.toString());
+
 
                     }
                 });
@@ -223,6 +226,8 @@ public class TaskFragment extends Fragment {
 
                     @Override
                     public void onFailure(@Nonnull ApolloException e) {
+                        Log.e("haitle16.TaskFragment2",e.toString());
+
 
                     }
                 });

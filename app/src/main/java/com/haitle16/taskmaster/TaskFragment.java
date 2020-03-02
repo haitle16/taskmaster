@@ -146,6 +146,7 @@ public class TaskFragment extends Fragment {
 
                     @Override
                     public void onFailure(@Nonnull ApolloException e) {
+                        Log.e("haitle16.TaskFragment0",e.toString());
 
                     }
                 });
@@ -171,6 +172,8 @@ public class TaskFragment extends Fragment {
 
                     @Override
                     public void onFailure(@Nonnull ApolloException e) {
+                        Log.e("haitle16.TaskFragment1",e.toString());
+
 
                     }
                 });
@@ -195,7 +198,7 @@ public class TaskFragment extends Fragment {
                                 // Create a list for the team's task based on user's team preference and iterate to populate the list with its tasks and then set items to that list.
                                 // Maybe find a way to see if its home page list only user team's task and on the all task page list all the tasks by setItems
 
-                                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext().getApplicationContext());
+                                SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(getContext());
                                 String userPreferredTeamName = sharedPreferences.getString("teamSelected", "Silver");
 
                                 String teamID = sharedPreferences.getString("teamSelectedID", ""); // default team silver
@@ -223,6 +226,8 @@ public class TaskFragment extends Fragment {
 
                     @Override
                     public void onFailure(@Nonnull ApolloException e) {
+                        Log.e("haitle16.TaskFragment2",e.toString());
+
 
                     }
                 });

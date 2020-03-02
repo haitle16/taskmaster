@@ -9,8 +9,8 @@
 					"defaultAuthentication": {
 						"authenticationType": "API_KEY",
 						"apiKeyConfig": {
-							"description": "connecting to taskmaster api",
-							"apiKeyExpirationDays": 7
+							"description": "apiKey",
+							"apiKeyExpirationDays": "365"
 						}
 					}
 				}
@@ -23,6 +23,12 @@
 			"providerPlugin": "awscloudformation",
 			"dependsOn": [],
 			"customAuth": false
+		}
+	},
+	"storage": {
+		"s3f6e528c2": {
+			"service": "S3",
+			"providerPlugin": "awscloudformation"
 		}
 	}
 }

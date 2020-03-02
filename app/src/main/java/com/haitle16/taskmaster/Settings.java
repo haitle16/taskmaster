@@ -2,6 +2,7 @@ package com.haitle16.taskmaster;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,7 +10,9 @@ import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -79,7 +82,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
 
                     @Override
                     public void onFailure(@Nonnull ApolloException e) {
-                        Log.i("haitle16.Settings", "failed setting team spinner");
+                        Log.i("haitle16.Settings", "failed setting team spinner" + e.toString());
 
                     }
                 });
@@ -119,6 +122,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
             @Override
             public void onClick(View v) {
                 AWSMobileClient.getInstance().signOut();
+                finish();
 
             }
         });
@@ -134,5 +138,15 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
     @Override
     public void onNothingSelected(AdapterView<?> parent) {
 
+    }
+
+    // Hide keyboard feature when clicked outside of input referenced from https://stackoverflow.com/questions/4165414/how-to-hide-soft-keyboard-on-android-after-clicking-outside-edittext
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (getCurrentFocus() != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+        }
+        return super.dispatchTouchEvent(ev);
     }
 }

@@ -29,13 +29,26 @@ import android.widget.Toast;
 import com.amazonaws.amplify.generated.graphql.CreateTaskMutation;
 import com.amazonaws.amplify.generated.graphql.CreateTaskmasterMutation;
 import com.amazonaws.amplify.generated.graphql.ListTeamsQuery;
+import com.amazonaws.mobile.client.AWSMobileClient;
+import com.amazonaws.mobile.client.Callback;
+import com.amazonaws.mobile.client.UserStateDetails;
 import com.amazonaws.mobile.config.AWSConfiguration;
 import com.amazonaws.mobileconnectors.appsync.AWSAppSyncClient;
 import com.amazonaws.mobileconnectors.appsync.fetcher.AppSyncResponseFetchers;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferListener;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferObserver;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferState;
+import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
+import com.amazonaws.regions.Region;
+import com.amazonaws.regions.Regions;
+import com.amazonaws.services.s3.AmazonS3Client;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -64,6 +77,19 @@ public class AddTask extends AppCompatActivity {
                 .context(getApplicationContext())
                 .awsConfiguration(new AWSConfiguration(getApplicationContext()))
                 .build();
+
+        // Initialize the AWSMobileClient if not initialized
+        AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
+            @Override
+            public void onResult(UserStateDetails userStateDetails) {
+                Log.i("haitle16.AddTask", "AWSMobileClient initialized. User State is " + userStateDetails.getUserState());
+            }
+
+            @Override
+            public void onError(Exception e) {
+                Log.e("haitle16.AddTask", "Initialization error.", e);
+            }
+        });
 
 
         // Team selection spinner on AddTask Page
@@ -172,9 +198,12 @@ public class AddTask extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i("haitle16", "selected photo");
 
-        if (requestCode == 0 && resultCode == RESULT_OK && null != data) {
+        if (requestCode == 777 && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
 //            stageImageForUpload(selectedImage);
+
+            uploadWithTransferUtility();
+
 
 
 
@@ -195,6 +224,68 @@ public class AddTask extends AppCompatActivity {
 
             startActivityForResult(i, 777);
         }
+    }
+
+
+    public void uploadWithTransferUtility() {
+//        AmazonS3Client s3Client = new AmazonS3Client(AWSMobileClient.getInstance(), Region.getRegion(Regions.DEFAULT_REGION));
+
+        TransferUtility transferUtility =
+                TransferUtility.builder()
+                        .context(getApplicationContext())
+                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
+                        .s3Client(new AmazonS3Client(AWSMobileClient.getInstance()))
+                        .build();
+
+        File file = new File(getApplicationContext().getFilesDir(), "sample.txt");
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.append("Howdy World!");
+            writer.close();
+        }
+        catch(Exception e) {
+            Log.e("haitle16.addTask", e.getMessage());
+        }
+
+        TransferObserver uploadObserver =
+                transferUtility.upload(
+                        "public/sample.txt",
+                        new File(getApplicationContext().getFilesDir(),"sample.txt"));
+
+        // Attach a listener to the observer to get state update and progress notifications
+        uploadObserver.setTransferListener(new TransferListener() {
+
+            @Override
+            public void onStateChanged(int id, TransferState state) {
+                if (TransferState.COMPLETED == state) {
+                    // Handle a completed upload.
+                }
+            }
+
+            @Override
+            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
+                float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
+                int percentDone = (int)percentDonef;
+
+                Log.d("haitle16.addTask", "ID:" + id + " bytesCurrent: " + bytesCurrent
+                        + " bytesTotal: " + bytesTotal + " " + percentDone + "%");
+            }
+
+            @Override
+            public void onError(int id, Exception ex) {
+                // Handle errors
+            }
+
+        });
+
+        // If you prefer to poll for the data, instead of attaching a
+        // listener, check for the state and progress in the observer.
+        if (TransferState.COMPLETED == uploadObserver.getState()) {
+            // Handle a completed upload.
+        }
+
+        Log.d("haitle16.addTask", "Bytes Transferred: " + uploadObserver.getBytesTransferred());
+        Log.d("haitle16.addTask", "Bytes Total: " + uploadObserver.getBytesTotal());
     }
 
     // Hide keyboard feature when clicked outside of input referenced from https://stackoverflow.com/questions/4165414/how-to-hide-soft-keyboard-on-android-after-clicking-outside-edittext

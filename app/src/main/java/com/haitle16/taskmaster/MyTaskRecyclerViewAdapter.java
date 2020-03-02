@@ -65,6 +65,8 @@ public class MyTaskRecyclerViewAdapter extends RecyclerView.Adapter<MyTaskRecycl
                 // consider passing body and state into the task details page
                 Intent toviewdetail = new Intent(v.getContext(), TaskDetail.class);
                 toviewdetail.putExtra("taskName", holder.mItem.title());
+                toviewdetail.putExtra("taskState", holder.mItem.state());
+                toviewdetail.putExtra("taskBody", holder.mItem.body());
                 v.getContext().startActivity(toviewdetail);
                 Log.i(TAG, "task holder was clicked");
             }

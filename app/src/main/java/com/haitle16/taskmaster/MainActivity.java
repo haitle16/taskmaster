@@ -45,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
 
         // Connect to AWS
         mAWSAppSyncClient = AWSAppSyncClient.builder()
-            .context(getApplicationContext())
-            .awsConfiguration(new AWSConfiguration(getApplicationContext()))
-            .build();
+                .context(getApplicationContext())
+                .awsConfiguration(new AWSConfiguration(getApplicationContext()))
+                .build();
 
 
 

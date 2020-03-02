@@ -1,11 +1,17 @@
 package com.haitle16.taskmaster;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 import type.CreateTaskInput;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
@@ -44,6 +50,7 @@ public class AddTask extends AppCompatActivity {
     private RecyclerView recyclerView;
 //    private SpinAdapter adapter;
     private Hashtable<String, String> teamNameID = new Hashtable<>();
+    String uuid;
 
 
 
@@ -159,7 +166,35 @@ public class AddTask extends AppCompatActivity {
                     }
                 });
 
+    }
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        Log.i("haitle16", "selected photo");
 
+        if (requestCode == 0 && resultCode == RESULT_OK && null != data) {
+            Uri selectedImage = data.getData();
+//            stageImageForUpload(selectedImage);
+
+
+
+            Log.i("haitle16", "photo is ready for upload");
+        } else {
+            Log.i("haitle16", "error with photo selection:\n" + requestCode + "\n" + resultCode + "\n" + data);
+        }
+    }
+
+    public void selectImage(View v) {
+        Log.i("haitle16", "upload image button clicked");
+        if(ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(this, new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE}, 0);
+        } else {
+            Intent i = new Intent(
+                    Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+            startActivityForResult(i, 777);
+        }
     }
 
     // Hide keyboard feature when clicked outside of input referenced from https://stackoverflow.com/questions/4165414/how-to-hide-soft-keyboard-on-android-after-clicking-outside-edittext

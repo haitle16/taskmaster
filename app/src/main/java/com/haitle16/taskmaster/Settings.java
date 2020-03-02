@@ -82,7 +82,7 @@ public class Settings extends AppCompatActivity implements AdapterView.OnItemSel
 
                     @Override
                     public void onFailure(@Nonnull ApolloException e) {
-                        Log.i("haitle16.Settings", "failed setting team spinner");
+                        Log.i("haitle16.Settings", "failed setting team spinner" + e.toString());
 
                     }
                 });

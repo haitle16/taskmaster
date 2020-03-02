@@ -61,20 +61,6 @@ public class MainActivity extends AppCompatActivity {
 //                .awsConfiguration(new AWSConfiguration(getApplicationContext()))
 //                .build();
 
-        // Initialize the AWSMobileClient if not initialized
-        AWSMobileClient.getInstance().initialize(getApplicationContext(), new Callback<UserStateDetails>() {
-            @Override
-            public void onResult(UserStateDetails userStateDetails) {
-                Log.i("haitle16.AddTask", "AWSMobileClient initialized. User State is " + userStateDetails.getUserState());
-                uploadWithTransferUtility();
-
-            }
-
-            @Override
-            public void onError(Exception e) {
-                Log.e("haitle16.AddTask", "Initialization error.", e);
-            }
-        });
 
 
 
@@ -226,65 +212,6 @@ public class MainActivity extends AppCompatActivity {
         Log.i(TAG, "stopped");
     }
 
-    public void uploadWithTransferUtility() {
-
-        TransferUtility transferUtility =
-                TransferUtility.builder()
-                        .context(getApplicationContext())
-                        .awsConfiguration(AWSMobileClient.getInstance().getConfiguration())
-                        .s3Client(new AmazonS3Client(AWSMobileClient.getInstance()))
-                        .build();
-
-        File file = new File(getApplicationContext().getFilesDir(), "sample.txt");
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            writer.append("Howdy World!");
-            writer.close();
-        }
-        catch(Exception e) {
-            Log.e("haitle16.addTask", e.getMessage());
-        }
-
-        TransferObserver uploadObserver =
-                transferUtility.upload(
-                        "public/sample.txt",
-                        new File(getApplicationContext().getFilesDir(),"sample.txt"));
-
-        // Attach a listener to the observer to get state update and progress notifications
-        uploadObserver.setTransferListener(new TransferListener() {
-
-            @Override
-            public void onStateChanged(int id, TransferState state) {
-                if (TransferState.COMPLETED == state) {
-                    // Handle a completed upload.
-                }
-            }
-
-            @Override
-            public void onProgressChanged(int id, long bytesCurrent, long bytesTotal) {
-                float percentDonef = ((float) bytesCurrent / (float) bytesTotal) * 100;
-                int percentDone = (int)percentDonef;
-
-                Log.d("haitle16.addTask", "ID:" + id + " bytesCurrent: " + bytesCurrent
-                        + " bytesTotal: " + bytesTotal + " " + percentDone + "%");
-            }
-
-            @Override
-            public void onError(int id, Exception ex) {
-                // Handle errors
-            }
-
-        });
-
-        // If you prefer to poll for the data, instead of attaching a
-        // listener, check for the state and progress in the observer.
-        if (TransferState.COMPLETED == uploadObserver.getState()) {
-            // Handle a completed upload.
-        }
-
-        Log.d("haitle16.addTask", "Bytes Transferred: " + uploadObserver.getBytesTransferred());
-        Log.d("haitle16.addTask", "Bytes Total: " + uploadObserver.getBytesTotal());
-    }
 
 
 }

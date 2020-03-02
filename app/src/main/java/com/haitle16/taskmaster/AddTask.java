@@ -11,12 +11,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.Message;
 import android.preference.PreferenceManager;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -42,6 +44,7 @@ import com.amazonaws.mobileconnectors.s3.transferutility.TransferUtility;
 import com.amazonaws.regions.Region;
 import com.amazonaws.regions.Regions;
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.apollographql.apollo.GraphQLCall;
 import com.apollographql.apollo.api.Response;
 import com.apollographql.apollo.exception.ApolloException;
@@ -50,10 +53,12 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.lang.reflect.Array;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.Nonnull;
 
@@ -198,11 +203,11 @@ public class AddTask extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         Log.i("haitle16", "selected photo");
 
-        if (requestCode == 777 && resultCode == RESULT_OK && null != data) {
+        if (requestCode == 123 && resultCode == RESULT_OK && null != data) {
             Uri selectedImage = data.getData();
 //            stageImageForUpload(selectedImage);
 
-            uploadWithTransferUtility();
+            uploadWithTransferUtility(selectedImage);
 
 
 
@@ -210,6 +215,19 @@ public class AddTask extends AppCompatActivity {
             Log.i("haitle16", "photo is ready for upload");
         } else {
             Log.i("haitle16", "error with photo selection:\n" + requestCode + "\n" + resultCode + "\n" + data);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,  String[] permissions,  int[] grantResults) {
+        if(requestCode != 0) {
+            return;
+        }
+        if(grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            Intent i = new Intent(
+                    Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+
+            startActivityForResult(i, 123);
         }
     }
 
@@ -222,13 +240,22 @@ public class AddTask extends AppCompatActivity {
             Intent i = new Intent(
                     Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
 
-            startActivityForResult(i, 777);
+            startActivityForResult(i, 123);
         }
     }
 
 
-    public void uploadWithTransferUtility() {
-//        AmazonS3Client s3Client = new AmazonS3Client(AWSMobileClient.getInstance(), Region.getRegion(Regions.DEFAULT_REGION));
+    public void uploadWithTransferUtility(Uri uri) {
+
+        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+
+        Cursor cursor = getContentResolver().query(uri,
+                filePathColumn, null, null, null);
+        cursor.moveToFirst();
+
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        cursor.close();
 
         TransferUtility transferUtility =
                 TransferUtility.builder()
@@ -247,10 +274,12 @@ public class AddTask extends AppCompatActivity {
             Log.e("haitle16.addTask", e.getMessage());
         }
 
+        final String uuid = UUID.randomUUID().toString();
+
         TransferObserver uploadObserver =
                 transferUtility.upload(
-                        "public/sample.txt",
-                        new File(getApplicationContext().getFilesDir(),"sample.txt"));
+                        "public/"+uuid,
+                        new File(picturePath));
 
         // Attach a listener to the observer to get state update and progress notifications
         uploadObserver.setTransferListener(new TransferListener() {

@@ -165,7 +165,7 @@ public class TaskFragment extends Fragment {
 //                        LinkedList<Task> appTasks = new LinkedList<>();
                         //  TODO: if the task gotten from DB is not null DO
                         for(GetTeamQuery.Item i : specificTeamTask) {
-                            Log.i("haitle16.TaskFragment", "Task Title: " + i.title() + " | Task Body: " + i.body() + " | Task State: " + i.state() + " | Task's TeamID: " +i.teamID());
+                            Log.i("haitle16.TaskFragment", "Task Title: " + i.title() + " | Task Body: " + i.body() + " | Task State: " + i.state() + " | Task's TeamID: " +i.teamID() + " | Task's UUID: " + i.imgPath());
                         }
 
                     }

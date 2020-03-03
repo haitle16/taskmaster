@@ -68,7 +68,8 @@ public class AddTask extends AppCompatActivity {
     private RecyclerView recyclerView;
 //    private SpinAdapter adapter;
     private Hashtable<String, String> teamNameID = new Hashtable<>();
-    String uuid;
+    private String uuid;
+    private String picturePath;
 
 
 
@@ -182,6 +183,7 @@ public class AddTask extends AppCompatActivity {
                 .body(taskBody)
                 .teamID(teamID)
                 .state(state)
+                .imgPath(uuid)// passing over the uuid
                 .build();
         mAWSAppSyncClient.mutate(CreateTaskMutation.builder().input(input).build())
                 .enqueue(new GraphQLCall.Callback<CreateTaskMutation.Data>() {
@@ -254,7 +256,7 @@ public class AddTask extends AppCompatActivity {
         cursor.moveToFirst();
 
         int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String picturePath = cursor.getString(columnIndex);
+        picturePath = cursor.getString(columnIndex);
         cursor.close();
 
         TransferUtility transferUtility =
@@ -264,17 +266,7 @@ public class AddTask extends AppCompatActivity {
                         .s3Client(new AmazonS3Client(AWSMobileClient.getInstance()))
                         .build();
 
-        File file = new File(getApplicationContext().getFilesDir(), "sample.txt");
-        try {
-            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
-            writer.append("Howdy World!");
-            writer.close();
-        }
-        catch(Exception e) {
-            Log.e("haitle16.addTask", e.getMessage());
-        }
-
-        final String uuid = UUID.randomUUID().toString();
+        uuid = UUID.randomUUID().toString();
 
         TransferObserver uploadObserver =
                 transferUtility.upload(
@@ -288,6 +280,8 @@ public class AddTask extends AppCompatActivity {
             public void onStateChanged(int id, TransferState state) {
                 if (TransferState.COMPLETED == state) {
                     // Handle a completed upload.
+
+
                 }
             }
 

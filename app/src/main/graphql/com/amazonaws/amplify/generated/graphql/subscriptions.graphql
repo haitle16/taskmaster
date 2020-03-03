@@ -6,6 +6,7 @@ subscription OnCreateTask {
     title
     body
     state
+    imgPath
   }
 }
 subscription OnUpdateTask {
@@ -15,6 +16,7 @@ subscription OnUpdateTask {
     title
     body
     state
+    imgPath
   }
 }
 subscription OnDeleteTask {
@@ -24,6 +26,7 @@ subscription OnDeleteTask {
     title
     body
     state
+    imgPath
   }
 }
 subscription OnCreateTeam {
@@ -37,6 +40,7 @@ subscription OnCreateTeam {
         title
         body
         state
+        imgPath
       }
       nextToken
     }
@@ -53,6 +57,7 @@ subscription OnUpdateTeam {
         title
         body
         state
+        imgPath
       }
       nextToken
     }
@@ -69,6 +74,7 @@ subscription OnDeleteTeam {
         title
         body
         state
+        imgPath
       }
       nextToken
     }

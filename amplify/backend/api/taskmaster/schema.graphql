@@ -5,6 +5,7 @@ type Task @model
   title: String
   body: String
   state: String
+  imgPath: String
 }
 type Team @model {
   id: ID!
